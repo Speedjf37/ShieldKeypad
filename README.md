@@ -47,7 +47,7 @@ Gestion de menu construit à partir du projet :
 		Bouton LEFT
 
 Ecran principal
-pour lancer le timer1 (valeurs H M S à saisir dans le menu)
+Pour lancer le timer1 (valeurs H M S à saisir dans le menu)
 Bouton UP   'R'->lance le moteur et le décompte
 Pour la pause
 Bouton UP   'P'
