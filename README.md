@@ -47,15 +47,15 @@ Gestion de menu construit à partir du projet :
 		Bouton LEFT
 
 Ecran principal
-Pour lancer le timer1 (valeurs H M S à saisir dans le menu)
-Bouton UP   'R'->lance le moteur et le décompte
-Pour la pause
-Bouton UP   'P'
-Arret
-Bouton DOWN 'S'->stop le moteur et le décompte
+ Pour lancer le timer1 (valeurs H M S à saisir dans le menu)
+ Bouton UP   'R'->lance le moteur et le décompte
+ Pour la pause
+ Bouton UP   'P'
+ Arret
+ Bouton DOWN 'S'->stop le moteur et le décompte
 
 
- Gestion du stepper
+Gestion du stepper
  MyStepper(2,3);
 
  * LIB StepperIndexer de CNCSERV (telecharger le fichier.zip et installer la LIB zip)
