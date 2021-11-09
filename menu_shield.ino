@@ -1,4 +1,6 @@
+
  
+ // Version Speedjf37 à partir du projet:
     /**
  * Name:     Arduino - Menu for Shield LCD
  * Autor:    Alberto Gil Tesa
@@ -44,8 +46,17 @@ int Count_Sec=0;
 int aff_sec = -1;
 int aff_min = -1;
 int aff_heu = -1;
+int new_sec = 0;
+int new_min = 0; 
+int new_heu = 0;
+int RUN =0;
 
-
+char Txt_Run[4]={
+'|',
+'/',
+'-',
+7  //customBackslash voir Lcd.h
+};
 // Pour alleger le code il est divisé par LIB
 void Mot_1Tr(void);
 
@@ -59,8 +70,7 @@ void Mot_1Tr(void);
 //#define TONE_STEP_PIN 3   
 
 #ifndef TONE_STEP_PIN
-#include "StepperIndexer.h"
-
+  #include "StepperIndexer.h"
 #endif
 
 
@@ -79,6 +89,7 @@ void setup()
 
 
     SetupLcd();
+    
     SetupClavier();
 
     
@@ -89,18 +100,18 @@ void setup()
 
 
  
-    // affiche le projet en cours:
+    // affiche le nom du projet en cours pendant 2 secondes:
     lcd.setCursor(0,0); lcd.print("Menu Shield LCD ");
-    lcd.setCursor(0,1); lcd.print("Timer + Stepper ");
+    lcd.setCursor(0,1); lcd.print("Tim + Step 1.00 ");
     Serial.println("Timer + Stepper ");
     delay(2000);
-    set_menu_exit(); 
+    set_menu_exit(); // Force l'état MENU_NO et affichage principal
 }
 
 #define MENU_NO_print
 void loop()
 {
-  int  new_sec, new_min, new_heu;
+
   char buffercar[17];
     tNow = millis();
 
@@ -111,7 +122,9 @@ void loop()
       if (aff_TimerState == -1)
         { 
         //AFFICHAGE GLOBAL 
-          
+        #ifdef MENU_NO_print
+          Serial.println(" AFFICHAGE GLOBAL ");  
+        #endif
         lcd.clear();
         lcd.setCursor(2,0);
         if (TimerState == 0)
@@ -121,10 +134,8 @@ void loop()
         if (TimerState == 2)
           lcd.print("P:");
             
-        lcd.print("T1:");     
         // AFF TIMER
-        sprintf(buffercar,"%02dh%02dm%02ds",Count_Sec/3600 %24 ,Count_Sec/60 %60,Count_Sec %60);
-        lcd.setCursor(7,0);
+        sprintf(buffercar,"T1:%02dh%02dm%02ds",Count_Sec/3600 %24 ,Count_Sec/60 %60,Count_Sec %60);
         lcd.print(buffercar);
         #ifdef MENU_NO_print
         Serial.print(" AFF TIMER :");
@@ -150,6 +161,7 @@ void loop()
          tone(TONE_STEP_PIN, VitesseMot);
        #else
         {
+        MyStepper.SetAccel(memory.d.mot_accel);
         VitesseMot=memory.d.mot_vit;
         MyStepper.SetSpeed(VitesseMot);
         lcd.print((VitesseMot/memory.d.mot_pas)*60);//tr/mn
@@ -182,7 +194,13 @@ void loop()
       if ( tNow - tPrevious >= 1000 )
         {
         tPrevious = tNow;
-        
+
+        RUN++;
+        if (RUN>3)
+          RUN=0;
+        lcd.setCursor(0,0);
+        lcd.print(Txt_Run[RUN]);
+
         if (TimerState == 1)
          if (Count_Sec>0)
           {
@@ -207,10 +225,16 @@ void loop()
        
        
         lcd.setCursor(0,2);
-        lcd.print("Vit MOT ");
-        lcd.setCursor(10,1);
-        
+        lcd.print("Vit: ");
+        lcd.setCursor(5,1);
+        lcd.print("      ");
+          
+        lcd.setCursor(5,1);
         lcd.print((VitesseMot/memory.d.mot_pas)*60);//tr/mn
+        lcd.setCursor(11,1);
+        lcd.print("Tr/mn");
+        
+        
         aff_TimerState = TimerState ;
         
       }// end t 1s
@@ -234,7 +258,8 @@ void loop()
             lcd.setCursor(7,0);
             sprintf(buffercar,"%02d", new_heu);
             lcd.print(buffercar);
-            Serial.println("Aff heu :");
+            Serial.print("Aff heu :");
+            Serial.println(buffercar);
             }
        if ( new_min != aff_min)
             {
@@ -242,7 +267,8 @@ void loop()
             lcd.setCursor(10,0);
             sprintf(buffercar,"%02d", new_min);
             lcd.print(buffercar);
-            Serial.println("Aff min :");
+            Serial.print("Aff min :");
+            Serial.println(buffercar);
             }
        if ( new_sec != aff_sec)
             {
@@ -250,17 +276,17 @@ void loop()
             lcd.setCursor(13,0);
             sprintf(buffercar,"%02d", new_sec);
             lcd.print(buffercar);
-            Serial.println("Aff sec :");
+            Serial.print("Aff sec :");
+            Serial.println(buffercar);
             }
           
             
         if (VitesseMot != aff_VitesseMot)
           {
-          //lcd.setCursor(0,1);
-          //lcd.print(" Vit MOT ");
-          lcd.setCursor(10,1);
-          //memory.d.mot_vit step/s
-          lcd.print((VitesseMot/memory.d.mot_pas)*60);//tr/mn
+          lcd.setCursor(5,1);
+          lcd.print("      ");
+          lcd.setCursor(5,1);
+          lcd.print((VitesseMot/memory.d.mot_vit)*60);//tr/mn memory.d.mot_vit step/s
         
           aff_VitesseMot = VitesseMot;
           }
