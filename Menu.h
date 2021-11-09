@@ -1,3 +1,7 @@
+
+
+
+
 /* CONSTANTES Y VARIABLES */
 /*#define TYPE_SMENU1       1
 #define TYPE_SMENU2       2
