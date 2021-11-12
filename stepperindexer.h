@@ -14,7 +14,11 @@
 int32_t cptmes2;
 int32_t cptmes3;
 
- TStepperIndexer MyStepper(2,3);
+
+#define STEP_PIN 2
+#define DIR_PIN 3
+
+ TStepperIndexer MyStepper(STEP_PIN,DIR_PIN);
  
 void SetupStepperIndexer()
 {

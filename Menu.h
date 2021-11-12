@@ -48,11 +48,12 @@ const char *txMENU[] = {
     "Salir          "
 */
 
-const byte iMENU = 15;
+const byte iMENU = 16;
 const char *txMENU[] = {// Maximo columnsLCD - 1 caracteres
     "Timer1 heure  ", 
     "Timer1 minute ",
     "Timer1 seconde",
+    "Timer1 vitesse",
     "Aff Mot/Sort  ",
     "Liai Sort *   ",
     "Liai Sort /   ",
@@ -65,6 +66,7 @@ const char *txMENU[] = {// Maximo columnsLCD - 1 caracteres
     "Mot Test 1 Tr ",
     "Sauve   & Quit",
     "Restore & Quit",
+    "Val Def & Quit",
     "Quit          "
     
 };
@@ -218,33 +220,40 @@ if (k == MD_UISwitch::KEY_PRESS)
                 case 0: T_SubMenu(  0, TYPE_INT,    &memory.d.Timer1_heu, 0, 23  ); break;
                 case 1: T_SubMenu(  1, TYPE_INT,    &memory.d.Timer1_min, 0, 59  ); break;
                 case 2: T_SubMenu(  2, TYPE_INT,    &memory.d.Timer1_sec, 0, 59 ); break;
-                case 3: T_SubMenu(  3, TYPE_SMENU1, &memory.d.aff,        0, 2  ); break;
-                case 4: T_SubMenu(  4, TYPE_INT,    &memory.d.liai_mult,  0, 100  ); break;
-                case 5: T_SubMenu(  5, TYPE_INT,    &memory.d.liai_div,   0, 100  ); break;
-                case 6: T_SubMenu(  6, TYPE_INT,    &memory.d.mot_pas,    0, 12000 ); break;
-                case 7: T_SubMenu(  7, TYPE_BOOL,   &memory.d.mot_sens,   0, 1  ); break;
-                case 8: T_SubMenu(  8, TYPE_INT,    &memory.d.mot_vitmin, 0, 12000 ); break;
-                case 9: T_SubMenu(  9, TYPE_INT,    &memory.d.mot_vitmax, 0, 12000 ); break;
-                case 10: T_SubMenu(  10, TYPE_INT,   &memory.d.mot_vit  , memory.d.mot_vitmin, memory.d.mot_vitmax  ); break;
-                case 11: T_SubMenu( 11, TYPE_INT,   &memory.d.mot_accel,  0, 12000 ); break;
+                case 3: T_SubMenu(  3, TYPE_INT,    &memory.d.Timer1_vit, memory.d.mot_vitmin, memory.d.mot_vitmax  ); break;
+                case 4: T_SubMenu(  4, TYPE_SMENU1, &memory.d.aff,        0, 2  ); break;
+                case 5: T_SubMenu(  5, TYPE_INT,    &memory.d.liai_mult,  0, 100  ); break;
+                case 6: T_SubMenu(  6, TYPE_INT,    &memory.d.liai_div,   0, 100  ); break;
+                case 7: T_SubMenu(  7, TYPE_INT,    &memory.d.mot_pas,    0, 12000 ); break;
+                case 8: T_SubMenu(  8, TYPE_BOOL,   &memory.d.mot_sens,   0, 1  ); break;
+                case 9: T_SubMenu(  9, TYPE_INT,    &memory.d.mot_vitmin, 0, 12000 ); break;
+                case 10: T_SubMenu( 10, TYPE_INT,    &memory.d.mot_vitmax, 0, 12000 ); break;
+                case 11: T_SubMenu( 11, TYPE_INT,   &memory.d.mot_vit  , memory.d.mot_vitmin, memory.d.mot_vitmax  ); break;
+                case 12: T_SubMenu( 12, TYPE_INT,   &memory.d.mot_accel,  0, 12000 ); break;
                 
-                case 12: 
+                case 13: 
                 Mot_1Tr(); 
                 Menu_Rang --; 
                 btn=0;
                 break;  
                 
-                case 13: 
+                case 14: 
                 writeConfiguration(); 
                 set_menu_exit();
                 break; 
                 
-                case 14: 
+                case 15: 
                 readConfiguration();   
                 set_menu_exit();         
                 break; 
                 
-                case 15:// Quit
+                case 16: 
+                Write_Val_Defaut();   
+                set_menu_exit();         
+                break; 
+                
+    
+                case 17:// Quit
                 set_menu_exit();            
                 break; 
             }

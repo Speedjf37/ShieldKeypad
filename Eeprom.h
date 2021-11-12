@@ -3,20 +3,20 @@
 
 /*  CONFIGURATION */
 struct MYDATA{
-    int initialized;
-    int Timer1_heu;
-    int Timer1_min;
-    int Timer1_sec;
-    int Timer1_vit;
-    int aff;
-    int liai_mult;
-    int liai_div;
-    int mot_pas;
-    int mot_sens;
-    int mot_vitmin;
-    int mot_vitmax;
-    int mot_vit;
-    int mot_accel;
+    int initialized;//1
+    int Timer1_heu;//2
+    int Timer1_min;//3
+    int Timer1_sec;//4
+    int Timer1_vit;//5
+    int aff;//6
+    int liai_mult;//7
+    int liai_div;//8
+    int mot_pas;//9
+    int mot_sens;///10
+    int mot_vitmin;//11
+    int mot_vitmax;//12
+    int mot_vit;//13
+    int mot_accel;//14
 };
 union MEMORY{
    MYDATA d;
@@ -26,28 +26,11 @@ memory;
 
 void writeConfiguration();
 void readConfiguration();
+void Write_Val_Defaut();
 
-void readConfiguration()
+
+void Write_Val_Defaut()
 {
- // Serial.println("readConfig") ;
-    for( int i=0 ; i < sizeof(memory.d) ; i++  )
-        memory.b[i] = EEPROM.read(i);
-// calibrer les h m s )        
-if (memory.d.Timer1_heu   >23)
-memory.d.Timer1_heu   = 0;
-if (memory.d.Timer1_heu   <0)
-memory.d.Timer1_heu   = 0;
-if (memory.d.Timer1_min   >59)
-memory.d.Timer1_min   = 0;
-if (memory.d.Timer1_min   <0)
-memory.d.Timer1_min   = 0;
-if (memory.d.Timer1_sec   >59)
-memory.d.Timer1_sec   = 0;
-if (memory.d.Timer1_sec   <0)
-memory.d.Timer1_sec   = 0;
-
-     if( !memory.d.initialized )
-    {
       // valeurs par defaut 
      // Serial.println("!memory.d.initialized") ;
         memory.d.initialized = true;
@@ -65,15 +48,76 @@ memory.d.Timer1_sec   = 0;
         memory.d.mot_accel    = 10000;
         
         writeConfiguration();
-    }
-
- 
- 
- 
- 
- 
 }
 
+
+
+
+#define Config_Print
+
+#ifdef Config_Print
+  extern const char *txMENU[];
+  extern const byte iMENU ;
+
+#endif
+
+
+void readConfiguration()
+{
+  int val;
+  int index;
+ // Serial.println("readConfig") ;
+    for( int i=0 ; i < sizeof(memory.d) ; i++  )
+       {
+        memory.b[i] = EEPROM.read(i);
+       }
+
+
+    #ifdef Config_Print
+        Serial.print(" sizeof(memory.d) :");
+        Serial.println(sizeof(memory.d) );
+    #endif 
+
+    index = -1;// 1 case memoire hors menu
+       
+    for( int i=0 ; i < sizeof(memory.d) ; i+=2  )
+       {
+       #ifdef Config_Print 
+        Serial.print(index+1);
+        Serial.print(" :");
+        if (index == -1)//case memoire hors menu
+          Serial.print("Initialised ");
+        else
+          Serial.print(txMENU[index]);
+        
+        Serial.print(" :");
+        val = memory.b[i+1 ]*256  + memory.b[i];// convertion 8 bits > 16 bits
+        Serial.println(val);
+       #endif
+       
+       index++;
+        }
+
+
+  // calibrer les h m s )        
+  if (memory.d.Timer1_heu   >23)
+    memory.d.Timer1_heu   = 0;
+  if (memory.d.Timer1_heu   <0)
+    memory.d.Timer1_heu   = 0;
+  if (memory.d.Timer1_min   >59)
+    memory.d.Timer1_min   = 0;
+  if (memory.d.Timer1_min   <0)
+    memory.d.Timer1_min   = 0;
+  if (memory.d.Timer1_sec   >59)
+    memory.d.Timer1_sec   = 0;
+  if (memory.d.Timer1_sec   <0)
+    memory.d.Timer1_sec   = 0;
+
+     if( !memory.d.initialized )
+      {
+      Write_Val_Defaut();
+      }
+}
 
 
 /**
