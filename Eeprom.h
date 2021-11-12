@@ -28,10 +28,14 @@ void writeConfiguration();
 void readConfiguration();
 void Write_Val_Defaut();
 
-
+#define Eeprom_print
+ 
 void Write_Val_Defaut()
 {
-      // valeurs par defaut 
+ #ifdef Eeprom_print
+  Serial.println("Eeprom write val defaut") ;
+ #endif
+ // valeurs par defaut 
      // Serial.println("!memory.d.initialized") ;
         memory.d.initialized = true;
         memory.d.Timer1_heu   = 0;
@@ -66,8 +70,10 @@ void readConfiguration()
 {
   int val;
   int index;
- // Serial.println("readConfig") ;
-    for( int i=0 ; i < sizeof(memory.d) ; i++  )
+ #ifdef Eeprom_print
+  Serial.println("Eeprom readConfig") ;
+ #endif
+ for( int i=0 ; i < sizeof(memory.d) ; i++  )
        {
         memory.b[i] = EEPROM.read(i);
        }
@@ -125,7 +131,9 @@ void readConfiguration()
  */
 void writeConfiguration()
 {
- // Serial.println("writeConfig") ;
-    for( int i=0 ; i<sizeof(memory.d) ; i++  )
+ #ifdef Eeprom_print
+  Serial.println("Eeprom writeConfig") ;
+ #endif
+      for( int i=0 ; i<sizeof(memory.d) ; i++  )
         EEPROM.write( i, memory.b[i] );
 }

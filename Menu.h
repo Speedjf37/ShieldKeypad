@@ -48,7 +48,7 @@ const char *txMENU[] = {
     "Salir          "
 */
 
-const byte iMENU = 16;
+const byte iMENU = 17;
 const char *txMENU[] = {// Maximo columnsLCD - 1 caracteres
     "Timer1 heure  ", 
     "Timer1 minute ",
