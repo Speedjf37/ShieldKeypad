@@ -49,7 +49,8 @@ void Write_Val_Defaut()
         memory.d.mot_sens     = 0;
         memory.d.mot_vitmin   = 800;
         memory.d.mot_vitmax   = 12000;
-        memory.d.mot_accel    = 10000;
+        memory.d.mot_accel    = 9000;
+        memory.d.mot_vit      = 10000;
         
         writeConfiguration();
 }
