@@ -29,6 +29,48 @@ void readConfiguration();
 void Write_Val_Defaut();
 
 #define Eeprom_print
+
+#define Config_Print
+
+#ifdef Config_Print
+  extern const char *txMENU[];
+  extern const byte iMENU ;
+
+#endif
+
+void PrintConfiguration()
+{
+  int val;
+  int index;
+
+ #ifdef Config_Print
+        Serial.print(" sizeof(memory.d) :");
+        Serial.println(sizeof(memory.d) );
+    #endif 
+
+    index = -1;// 1 case memoire hors menu
+       
+    for( int i=0 ; i < sizeof(memory.d) ; i+=2  )
+       {
+       #ifdef Config_Print 
+        Serial.print(index+1);
+        Serial.print(" :");
+        if (index == -1)//case memoire hors menu
+          Serial.print("Initialised ");
+        else
+          Serial.print(txMENU[index]);
+        
+        Serial.print(" :");
+        val = memory.b[i+1 ]*256  + memory.b[i];// convertion 8 bits > 16 bits
+        Serial.println(val);
+       #endif
+       
+       index++;
+       }
+
+}
+
+
  
 void Write_Val_Defaut()
 {
@@ -52,25 +94,18 @@ void Write_Val_Defaut()
         memory.d.mot_accel    = 9000;
         memory.d.mot_vit      = 10000;
         
-        writeConfiguration();
+ writeConfiguration();
+
+ PrintConfiguration();
 }
 
 
 
 
-#define Config_Print
-
-#ifdef Config_Print
-  extern const char *txMENU[];
-  extern const byte iMENU ;
-
-#endif
 
 
 void readConfiguration()
 {
-  int val;
-  int index;
  #ifdef Eeprom_print
   Serial.println("Eeprom readConfig") ;
  #endif
@@ -80,32 +115,7 @@ void readConfiguration()
        }
 
 
-    #ifdef Config_Print
-        Serial.print(" sizeof(memory.d) :");
-        Serial.println(sizeof(memory.d) );
-    #endif 
-
-    index = -1;// 1 case memoire hors menu
-       
-    for( int i=0 ; i < sizeof(memory.d) ; i+=2  )
-       {
-       #ifdef Config_Print 
-        Serial.print(index+1);
-        Serial.print(" :");
-        if (index == -1)//case memoire hors menu
-          Serial.print("Initialised ");
-        else
-          Serial.print(txMENU[index]);
-        
-        Serial.print(" :");
-        val = memory.b[i+1 ]*256  + memory.b[i];// convertion 8 bits > 16 bits
-        Serial.println(val);
-       #endif
-       
-       index++;
-        }
-
-
+   
   // calibrer les h m s )        
   if (memory.d.Timer1_heu   >23)
     memory.d.Timer1_heu   = 0;
@@ -124,6 +134,7 @@ void readConfiguration()
       {
       Write_Val_Defaut();
       }
+PrintConfiguration();      
 }
 
 

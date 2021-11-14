@@ -95,7 +95,9 @@ void set_menu_start()
    Menu_Rang = MENU_CHOIX ;// START MENU
    S.enableRepeat(true);
    S.enableLongPress(false);
-   Serial.println("START MENU") ;
+   #ifdef Debug_key
+    Serial.println("START MENU") ;
+   #endif
    aff_TimerState =-1;
 } 
 void set_menu_exit()
@@ -106,7 +108,10 @@ void set_menu_exit()
    aff_TimerState = -1;
    S.enableRepeat(false);
    S.enableLongPress(true); 
-   Serial.println("END MENU") ;  
+   #ifdef Debug_key
+    Serial.println("END MENU") ;  
+   #endif
+      
 }
 
 /**
@@ -151,8 +156,7 @@ if (k == MD_UISwitch::KEY_PRESS)
      {     
      #ifdef Debug_key
       Serial.println("KEY_PRESS Menu") ;
-      #endif
-      Serial.println("KEY_PRESS Menu") ;
+     #endif
      if   (Menu_Rang == MENU_NO)
       {
       if( btn == btnUP )

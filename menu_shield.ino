@@ -75,7 +75,7 @@ void Mot_1Tr(void);
 
 
 
-
+#define version "V 1.00"
 
 /**
  *
@@ -102,13 +102,18 @@ void setup()
  
     // affiche le nom du projet en cours pendant 2 secondes:
     lcd.setCursor(0,0); lcd.print("Menu Shield LCD ");
-    lcd.setCursor(0,1); lcd.print("Tim + Step 1.00 ");
-    Serial.println("Timer + Stepper ");
+    lcd.setCursor(0,1); lcd.print("Tim + Step ");
+    lcd.print(version);
+    
+    Serial.println();
+    Serial.print("Timer + Stepper ");
+    Serial.println(version);
+    Serial.println();
     delay(2000);
     set_menu_exit(); // Force l'état MENU_NO et affichage principal
 }
 
-#define MENU_NO_print
+//#define MENU_NO_print
 void loop()
 {
 
