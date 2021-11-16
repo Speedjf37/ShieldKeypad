@@ -71,21 +71,14 @@ const char *txMENU[] = {// Maximo columnsLCD - 1 caracteres
     
 };
 
-/* TEXTOS SUB MENU 1 */
+/* TEXTE SUB MENU 1 */
 const byte  iMENU1 = 2;
 const char *txSMENU1[] = {
     "   Moteur     ", // Max columnsLCD - 2 caracteres
     "   Sortie     "
 };
 
-/* TEXTOS SUB MENU 2 */
-/*
-const byte  iMENU2 = 2;
-const char *txSMENU2[] = {
-    "   Degres C   ", // Maximo columnsLCD - 2 caracteres
-    "   Degres F   "
-};
-*/
+
 
 void T_SubMenu( byte nameID, byte typeMenu, int *value, int minValue, int maxValue );
 
@@ -296,7 +289,7 @@ if (k == MD_UISwitch::KEY_PRESS)
                 lcd.print(" ");
             }
             lcd.setCursor(0, Menu_Position % rowsLCD );
-            lcd.write(ARROW);
+            lcd.write(C_ARROW);
           }// end change 
           
 } //end T_Menu
