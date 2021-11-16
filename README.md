@@ -1,4 +1,7 @@
 # ShieldKeypad
+13/11//2021
+Changement nom du fichier .ino menu_shield_timer_stepper.ino
+Fix version 1.00
 
 Creation d'un menu pour Arduino shield LCD Keypad
 Testé avec les cartes Arduino UNO  et MEGA2560
