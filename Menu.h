@@ -204,7 +204,9 @@ if (k == MD_UISwitch::KEY_PRESS)
         }
        else if( btn == btnRIGHT )
          {
+          Menu_Rang_Mem = Menu_Rang;// correction info fantomes
           Menu_Rang ++; 
+          
           btn=0;
           //Serial.println(" Menu_Rang ++") ;
          }

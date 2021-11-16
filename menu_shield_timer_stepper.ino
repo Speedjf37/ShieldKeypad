@@ -144,6 +144,7 @@ void setup()
     Serial.println();
     delay(2000);
     set_menu_exit(); // Force l'état MENU_NO et affichage principal
+    
 }
 
 #define MENU_NO_print
