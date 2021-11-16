@@ -92,6 +92,8 @@ void set_menu_start()
     Serial.println("START MENU") ;
    #endif
    aff_TimerState =-1;
+   Menu_Position_Mem=-1; //force le raffraichissement ecran menu
+        
 } 
 void set_menu_exit()
 {
@@ -157,6 +159,9 @@ if (k == MD_UISwitch::KEY_PRESS)
         //Serial.println(" btnUP");
         if (  TimerState < 2)
           TimerState ++; //Start Pause
+        else if (  TimerState == 2)
+         TimerState --; //Fin Pause restart
+          
         }
       else if( btn == btnDOWN )
         {
@@ -259,9 +264,11 @@ if (k == MD_UISwitch::KEY_PRESS)
   
        if ( ( Menu_Rang == MENU_CHOIX) && ( (Menu_Position != Menu_Position_Mem)||(millis()%500 == 0 )||(k == MD_UISwitch::KEY_PRESS) ))
         {
+          if ( Menu_Position_Mem != Menu_Position )
+          {
             Menu_Position_Mem = Menu_Position ;
             lcd.clear();
-          
+          Serial.println("Menu_Position_Mem = Menu_Position");
             if(  Menu_Position % rowsLCD == 0 )
               {
                 for( int i=Menu_Position ; i<(Menu_Position+rowsLCD) ; i++ )
@@ -290,8 +297,9 @@ if (k == MD_UISwitch::KEY_PRESS)
             }
             lcd.setCursor(0, Menu_Position % rowsLCD );
             lcd.write(C_ARROW);
+         
           }// end change 
-          
+        }
 } //end T_Menu
 
 
@@ -333,6 +341,7 @@ void T_SubMenu( byte nameID, byte typeMenu, int *value, int minValue, int maxVal
     if( btn == btnLEFT  )//Exit SubMenu
         {
         Menu_Rang = MENU_CHOIX;
+        Menu_Position_Mem=-1; //force le raffraichissement ecran  menu
         //Serial.println("Exit SubMenu");
         }
         else if( INC == 0 && btn == btnDOWN  && (*value)-1 >= minValue )
@@ -387,12 +396,14 @@ void T_SubMenu( byte nameID, byte typeMenu, int *value, int minValue, int maxVal
   
       if  ( ( Menu_Rang == MENU_SAISIE) && (( Menu_Rang != Menu_Rang_Mem) || (millis()%250 == 0 ) ||(k == MD_UISwitch::KEY_PRESS)) )
           {
+            if( Menu_Rang_Mem !=  Menu_Rang )
+            {
             Menu_Rang_Mem =  Menu_Rang ;
             lcd.clear();
             //Serial.println("AFF T_SubMenu");
             lcd.setCursor(0,0);
             lcd.print(txMENU[nameID]);
-
+            }
             lcd.setCursor(0,1);
             lcd.print("<");
             
@@ -443,6 +454,7 @@ void T_SubMenu( byte nameID, byte typeMenu, int *value, int minValue, int maxVal
                 lcd.print(*value);
                 lcd.print(" ");
             }
+          
         }// end menu_rang change
     
 } //end T_SubMenu

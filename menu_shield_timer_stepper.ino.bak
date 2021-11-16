@@ -184,7 +184,7 @@ void loop()
         lcd.setCursor(0,2);
         lcd.print("Vit: ");
         lcd.setCursor(5,1);
-        lcd.print("  0   ");
+        lcd.print("      ");
           
         //lcd.setCursor(5,1);
         //lcd.print((VitesseMot/memory.d.mot_pas)*60);//tr/mn
@@ -206,10 +206,9 @@ void loop()
        #endif
        Count_Sec =  (memory.d.Timer1_heu * 3600) + (memory.d.Timer1_min * 60) + memory.d.Timer1_sec ;
        
-       MyStepper.SetAccel(memory.d.mot_accel);
-       VitesseMot=memory.d.mot_vit;
-       MyStepper.SetSpeed(VitesseMot);
-       }
+        MyStepper.SetAccel(memory.d.mot_accel);
+        VitesseMot=memory.d.mot_vit;
+        MyStepper.SetSpeed(VitesseMot);
        
        if( (TimerState ==1)&&(TimerState_old  ==2 )) //fin Pause Restart
         {
