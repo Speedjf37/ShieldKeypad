@@ -54,7 +54,7 @@ affichage des  compteurs
  * Analog  A1, A2, A3, A4, A5
  * VIn Gnd(2) 5V 3V3 Reset
 
-A1 entrée codeur
-A2 entrée butée AR
+ * A1 entrée codeur
+ * A2 entrée butée AR
  
  
