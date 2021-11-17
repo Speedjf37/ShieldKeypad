@@ -48,10 +48,22 @@ const char *txMENU[] = {
     "Salir          "
 */
 
-const byte iMENU = 5;
+const byte iMENU = 17;
 const char *txMENU[] = {// Maximo columnsLCD - 1 caracteres
-    "Nb tr VM      ",
-    "Nb Cpt /tr    ",
+    "Timer1 heure  ", 
+    "Timer1 minute ",
+    "Timer1 seconde",
+    "Timer1 vitesse",
+    "Aff Mot/Sort  ",
+    "Liai Sort *   ",
+    "Liai Sort /   ",
+    "Mot nb pas/tr ",
+    "Mot sens      ",
+    "Mot Vit Min   ",
+    "Mot Vit Max   ",
+    "Mot Vit       ",
+    "Mot Accel     ",
+    "Mot Test 1 Tr ",
     "Sauve   & Quit",
     "Restore & Quit",
     "Val Def & Quit",
@@ -60,13 +72,12 @@ const char *txMENU[] = {// Maximo columnsLCD - 1 caracteres
 };
 
 /* TEXTE SUB MENU 1 */
-/*
 const byte  iMENU1 = 2;
 const char *txSMENU1[] = {
     "   Moteur     ", // Max columnsLCD - 2 caracteres
     "   Sortie     "
 };
-*/
+
 
 
 void T_SubMenu( byte nameID, byte typeMenu, int *value, int minValue, int maxValue );
@@ -75,18 +86,22 @@ void T_SubMenu( byte nameID, byte typeMenu, int *value, int minValue, int maxVal
 void set_menu_start()
 {
    Menu_Rang = MENU_CHOIX ;// START MENU
-   menu_Rang_old = -1;
    S.enableRepeat(true);
    S.enableLongPress(false);
-   //#ifdef Debug_key
+   #ifdef Debug_key
     Serial.println("START MENU") ;
-   //#endif
+   #endif
+   aff_TimerState =-1;
+   Menu_Position_Mem=-1; //force le raffraichissement ecran menu
+        
 } 
 void set_menu_exit()
 {
-   Menu_Rang = MENU_NO ; 
-   menu_Rang_old = -1;
-   lcd.clear();
+  lcd.clear();
+   Menu_Rang = MENU_NO; 
+   TimerState = 0 ;
+   TimerState_old = -1;
+   aff_TimerState = -1;
    S.enableRepeat(false);
    S.enableLongPress(true); 
    #ifdef Debug_key
@@ -143,19 +158,28 @@ if (k == MD_UISwitch::KEY_PRESS)
       if( btn == btnUP )
         {
         //Serial.println(" btnUP");
+        if (  TimerState < 2)
+          TimerState ++; //Start Pause
+        else if (  TimerState == 2)
+         TimerState --; //Fin Pause restart
+          
         }
       else if( btn == btnDOWN )
         {
         //Serial.println(" btnDOWN");
+          TimerState = 0;
         
         }
        else if( btn == btnRIGHT )
          {
          //Serial.println(" btnRIGHT");
+          VitesseMot ++;
          }
        else if( btn == btnLEFT )
          {
          //Serial.println(" btnLEFT");
+          if ( VitesseMot >2)
+           VitesseMot --;
          }
          /*Serial.print("VitesseMot : ");
          Serial.println(VitesseMot);
@@ -183,6 +207,7 @@ if (k == MD_UISwitch::KEY_PRESS)
          {
           Menu_Rang_Mem = Menu_Rang;// correction info fantomes
           Menu_Rang ++; 
+          
           btn=0;
           //Serial.println(" Menu_Rang ++") ;
          }
@@ -197,26 +222,43 @@ if (k == MD_UISwitch::KEY_PRESS)
           {
             switch( Menu_Position )
             {
-                case 0: T_SubMenu(  0, TYPE_INT,    &memory.d.CptVM, 1, 1000 ); break;
-                case 1: T_SubMenu(  1, TYPE_INT,    &memory.d.CptTr, 9, 100  ); break;
+                case 0: T_SubMenu(  0, TYPE_INT,    &memory.d.Timer1_heu, 0, 23  ); break;
+                case 1: T_SubMenu(  1, TYPE_INT,    &memory.d.Timer1_min, 0, 59  ); break;
+                case 2: T_SubMenu(  2, TYPE_INT,    &memory.d.Timer1_sec, 0, 59 ); break;
+                case 3: T_SubMenu(  3, TYPE_INT,    &memory.d.Timer1_vit, memory.d.mot_vitmin, memory.d.mot_vitmax  ); break;
+                case 4: T_SubMenu(  4, TYPE_SMENU1, &memory.d.aff,        0, 2  ); break;
+                case 5: T_SubMenu(  5, TYPE_INT,    &memory.d.liai_mult,  0, 100  ); break;
+                case 6: T_SubMenu(  6, TYPE_INT,    &memory.d.liai_div,   0, 100  ); break;
+                case 7: T_SubMenu(  7, TYPE_INT,    &memory.d.mot_pas,    0, 12000 ); break;
+                case 8: T_SubMenu(  8, TYPE_BOOL,   &memory.d.mot_sens,   0, 1  ); break;
+                case 9: T_SubMenu(  9, TYPE_INT,    &memory.d.mot_vitmin, 0, 12000 ); break;
+                case 10: T_SubMenu( 10, TYPE_INT,    &memory.d.mot_vitmax, 0, 12000 ); break;
+                case 11: T_SubMenu( 11, TYPE_INT,   &memory.d.mot_vit  , memory.d.mot_vitmin, memory.d.mot_vitmax  ); break;
+                case 12: T_SubMenu( 12, TYPE_INT,   &memory.d.mot_accel,  0, 12000 ); break;
                 
-                case 2: 
+                case 13: 
+                Mot_1Tr(); 
+                Menu_Rang --; 
+                btn=0;
+                break;  
+                
+                case 14: 
                 writeConfiguration(); 
                 set_menu_exit();
                 break; 
                 
-                case 3: 
+                case 15: 
                 readConfiguration();   
                 set_menu_exit();         
                 break; 
                 
-                case 4: 
+                case 16: 
                 Write_Val_Defaut();   
                 set_menu_exit();         
                 break; 
                 
     
-                case 5:// Quit
+                case 17:// Quit
                 set_menu_exit();            
                 break; 
             }
@@ -229,7 +271,7 @@ if (k == MD_UISwitch::KEY_PRESS)
           {
             Menu_Position_Mem = Menu_Position ;
             lcd.clear();
-          
+          Serial.println("Menu_Position_Mem = Menu_Position");
             if(  Menu_Position % rowsLCD == 0 )
               {
                 for( int i=Menu_Position ; i<(Menu_Position+rowsLCD) ; i++ )
@@ -388,38 +430,34 @@ void T_SubMenu( byte nameID, byte typeMenu, int *value, int minValue, int maxVal
                lcd.print("   0"); 
               }
             
-
-          if( typeMenu == TYPE_BOOL )
+            
+            if( typeMenu == TYPE_SMENU1 )
+            {
+                lcd.setCursor(1,1);
+                lcd.print(txSMENU1[*value]);
+            }
+/*            else if( typeMenu == TYPE_SMENU2 )
+            {
+                lcd.setCursor(1,1);
+                lcd.print(txSMENU2[*value]);
+            }
+*/            else if( typeMenu == TYPE_BOOL )
             {
                 lcd.setCursor(columnsLCD/2-1, 1);
                 lcd.print(*value == 0 ? "0" : "1");
             }
-          else if( typeMenu == TYPE_SET )
+              else if( typeMenu == TYPE_SET )
             {
                 lcd.setCursor(columnsLCD/2-1, 1);
                 lcd.print(*value == 0 ? "NON" : "OUI");
             }
-          else if( typeMenu == TYPE_INT )
+            else if( typeMenu == TYPE_INT )
             {
                 lcd.setCursor( (columnsLCD-4)/2-1, 1);
                 lcd.print(*value);
                 lcd.print(" ");
             }
-#ifdef TYPE_SMENU1          
-          else if( typeMenu == TYPE_SMENU1 )
-            {
-                lcd.setCursor(1,1);
-                lcd.print(txSMENU1[*value]);
-            }
-#endif
-#ifdef TYPE_SMENU2 
-          else if( typeMenu == TYPE_SMENU2 )
-            {
-                lcd.setCursor(1,1);
-                lcd.print(txSMENU2[*value]);
-            }
-#endif 
-     
+          
         }// end menu_rang change
     
 } //end T_SubMenu
