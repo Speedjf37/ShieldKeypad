@@ -164,7 +164,7 @@ void loop()
         //#ifdef MENU_NO_print
           Serial.println(" AFFICHAGE GLOBAL ");  
         //#endif
-        //lcd.clear(); // deplacé dans menu_exit
+        //lcd.clear(); // deplacé dans set_menu_exit
         lcd.setCursor(2,0);
         if (TimerState == 0)
           lcd.print("S:");
